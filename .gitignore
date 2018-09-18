@@ -11,3 +11,4 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 /比特币教程/Golang实现比特币/03-持久化和CLI/src/blockchain.db
+/比特币教程/Golang实现比特币/03-持久化和CLI/src/blockchain

@@ -51,6 +51,7 @@ func (cli *CLI) printChain() {
 	}
 }
 
+// Run process command arguments
 func (cli *CLI) Run() {
 	cli.validateArgs()
 

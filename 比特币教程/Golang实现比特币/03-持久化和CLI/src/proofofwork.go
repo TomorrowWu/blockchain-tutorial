@@ -14,11 +14,13 @@ var (
 
 const targetBits = 24
 
+// ProofOfWork PoW
 type ProofOfWork struct {
 	block  *Block
 	target *big.Int
 }
 
+//NewProffOfWork create PoW
 func NewProffOfWork(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256-targetBits))
