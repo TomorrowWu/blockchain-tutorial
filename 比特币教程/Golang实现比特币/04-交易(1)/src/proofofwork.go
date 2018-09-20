@@ -12,36 +12,35 @@ var (
 	maxNonce = math.MaxInt64
 )
 
-const targetBits = 10
+const targetBits = 24
 
-// ProofOfWork PoW
+// ProofOfWork represents a proof-of-work
 type ProofOfWork struct {
 	block  *Block
 	target *big.Int
 }
 
-//NewProffOfWork create PoW
-func NewProffOfWork(b *Block) *ProofOfWork {
+// NewProofOfWork builds and returns a ProofOfWork
+func NewProofOfWork(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256-targetBits))
 
-	pow := &ProofOfWork{
-		block:  b,
-		target: target,
-	}
+	pow := &ProofOfWork{b, target}
+
 	return pow
 }
 
 func (pow *ProofOfWork) prepareData(nonce int) []byte {
-	//why is hex ?
 	data := bytes.Join(
 		[][]byte{
 			pow.block.PrevBlockHash,
-			pow.block.Data,
+			pow.block.HashTransactions(),
 			IntToHex(pow.block.Timestamp),
 			IntToHex(int64(targetBits)),
 			IntToHex(int64(nonce)),
-		}, []byte{})
+		},
+		[]byte{},
+	)
 
 	return data
 }
@@ -52,7 +51,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	var hash [32]byte
 	nonce := 0
 
-	fmt.Printf("Mining the block containing \"%s\"\n", pow.block.Data)
+	fmt.Printf("Mining a new block")
 	for nonce < maxNonce {
 		data := pow.prepareData(nonce)
 
@@ -69,7 +68,6 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	fmt.Print("\n\n")
 
 	return nonce, hash[:]
-
 }
 
 // Validate validates block's PoW
