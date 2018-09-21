@@ -99,7 +99,7 @@ func dbExists() bool {
 }
 
 // NewBlockchain creates a new Blockchain with genesis Block
-func NewBlockchain(address string) *Blockchain {
+func NewBlockchain() *Blockchain {
 	if dbExists() == false {
 		fmt.Println("No existing blockchain found. Create one first.")
 		os.Exit(1)
@@ -254,7 +254,8 @@ Work:
 				accumulated += out.Value
 				unspentOutputs[txID] = append(unspentOutputs[txID], outIdx)
 
-				if accumulated >= amount {
+				//charge for transaction so that >
+				if accumulated > amount {
 					break Work
 				}
 			}
