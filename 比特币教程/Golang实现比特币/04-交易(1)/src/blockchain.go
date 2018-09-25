@@ -198,6 +198,7 @@ func (bc *Blockchain) FindUnspentTransactions(address string) []Transaction {
 				}
 
 				//只要这个tx中关于这个address有一个output未被消费,就能进入unspentTXs
+				////TODO 吴名 2018/9/21 下午1:51 这个函数后面会扩展,unlock:私钥能解锁+未被消费
 				if out.CanBeUnlockedWith(address) {
 					unspentTXs = append(unspentTXs, *tx)
 				}
@@ -226,7 +227,6 @@ func (bc *Blockchain) FindUTXO(address string) []TXOutput {
 	var UTXOs []TXOutput
 	unspentTransactions := bc.FindUnspentTransactions(address)
 
-	//TODO 吴名 2018/9/20 下午9:03 可能存在bug
 	//? Transaction中包含多个output,部分spent,部分unspent
 	for _, tx := range unspentTransactions {
 		for _, out := range tx.Vout {

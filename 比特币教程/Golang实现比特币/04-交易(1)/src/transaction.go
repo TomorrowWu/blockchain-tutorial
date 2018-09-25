@@ -14,14 +14,14 @@ const subsidy = 10
 // TXInput represents a transaction input
 type TXInput struct {
 	Txid      []byte
-	Vout      int // 交易中某个输出的索引( index of one in Transaction's Vout )
-	ScriptSig string
+	Vout      int    //交易中某个输出的索引( index of one in Transaction's Vout )
+	ScriptSig string //解锁脚本
 }
 
 // TXOutput represents a transaction output
 type TXOutput struct {
 	Value        int
-	ScriptPubKey string
+	ScriptPubKey string //锁定脚本
 }
 
 // Transaction represents a Bitcoin transaction
