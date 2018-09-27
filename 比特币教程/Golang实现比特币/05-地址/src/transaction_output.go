@@ -18,6 +18,7 @@ func (out *TXOutput) Lock(address []byte) {
 
 // IsLockedWithKey checks if the output can be used by the owner of the pubkey
 func (out *TXOutput) IsLockedWithKey(pubKeyHash []byte) bool {
+	//TODO 吴名 2018/9/27 10:31 并未用使用解锁脚本(这里简化了)
 	return bytes.Compare(out.PubKeyHash, pubKeyHash) == 0
 }
 

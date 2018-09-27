@@ -97,13 +97,16 @@ func (tx *Transaction) Sign(privKey ecdsa.PrivateKey, prevTXs map[string]Transac
 		}
 	}
 
+	//将transaction进行修剪,copy出签名需要的数据结构对象
 	txCopy := tx.TrimmedCopy()
 
 	for inID, vin := range txCopy.Vin {
 		prevTx := prevTXs[hex.EncodeToString(vin.Txid)]
+
 		txCopy.Vin[inID].Signature = nil
 		txCopy.Vin[inID].PubKey = prevTx.Vout[vin.Vout].PubKeyHash
 		txCopy.ID = txCopy.Hash()
+
 		txCopy.Vin[inID].PubKey = nil
 
 		r, s, err := ecdsa.Sign(rand.Reader, &privKey, txCopy.ID)
@@ -159,9 +162,11 @@ func (tx *Transaction) Verify(prevTXs map[string]Transaction) bool {
 
 	for inID, vin := range tx.Vin {
 		prevTx := prevTXs[hex.EncodeToString(vin.Txid)]
+
 		txCopy.Vin[inID].Signature = nil
 		txCopy.Vin[inID].PubKey = prevTx.Vout[vin.Vout].PubKeyHash
 		txCopy.ID = txCopy.Hash()
+
 		txCopy.Vin[inID].PubKey = nil
 
 		r := big.Int{}
@@ -182,6 +187,8 @@ func (tx *Transaction) Verify(prevTXs map[string]Transaction) bool {
 			Y:     &y,
 		}
 		//验证签名
+		//TXInput的pubkey,r和s签名,transaction的hash
+		//为什么验证input的签名:与Sign函数对应,使用同样的hash
 		if ecdsa.Verify(&rawPubKey, txCopy.ID, &r, &s) == false {
 			return false
 		}
