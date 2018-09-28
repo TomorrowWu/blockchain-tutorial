@@ -1,7 +1,13 @@
 BINARY := blockchain
 
+all: build run
+
 build:
-	@echo "====> Go build"
+	@echo "==> Go build"
 	@go build -o $(BINARY)
 
-.PHONY: build
+run:
+	@echo "==> Running"
+	@./$(BINARY)
+
+.PHONY: build run

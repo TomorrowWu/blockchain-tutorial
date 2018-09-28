@@ -22,38 +22,11 @@ type Blockchain struct {
 	db  *bolt.DB
 }
 
-// BlockchainIterator is used to iterate over blockchain blocks
-type BlockchainIterator struct {
-	currentHash []byte
-	db          *bolt.DB
-}
-
 // Iterator returns a BlockchainIterat
 func (bc *Blockchain) Iterator() *BlockchainIterator {
 	bci := &BlockchainIterator{bc.tip, bc.db}
 
 	return bci
-}
-
-// Next returns next block starting from the tip
-func (i *BlockchainIterator) Next() *Block {
-	var block *Block
-
-	err := i.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(blocksBucket))
-		encodedBlock := b.Get(i.currentHash)
-		block = DeserializeBlock(encodedBlock)
-
-		return nil
-	})
-
-	if err != nil {
-		log.Panic(err)
-	}
-
-	i.currentHash = block.PrevBlockHash
-
-	return block
 }
 
 // MineBlock mines a new block with the provided transactions
@@ -109,7 +82,7 @@ func dbExists() bool {
 }
 
 // NewBlockchain creates a new Blockchain with genesis Block
-func NewBlockchain() *Blockchain {
+func NewBlockchain(address string) *Blockchain {
 	if dbExists() == false {
 		fmt.Println("No existing blockchain found. Create one first.")
 		os.Exit(1)
@@ -240,6 +213,7 @@ func (bc *Blockchain) FindUTXO(pubKeyHash []byte) []TXOutput {
 	unspentTransactions := bc.FindUnspentTransactions(pubKeyHash)
 
 	//? Transaction中包含多个output,部分spent,部分unspent
+	//最简版,一个Transaction只有该address一个输出
 	for _, tx := range unspentTransactions {
 		for _, out := range tx.Vout {
 			if out.IsLockedWithKey(pubKeyHash) {
