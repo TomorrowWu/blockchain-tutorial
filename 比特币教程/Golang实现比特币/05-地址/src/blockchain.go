@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"crypto/ecdsa"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -277,7 +278,7 @@ Work:
 }
 
 // FindTransaction finds a transaction by its ID
-func (bc *Blockchain) FindTransaction(ID []byte) (Transaction, error) {
+func (bc *Blockchain) FindTransaction(ID []byte) (*Transaction, error) {
 	bci := bc.Iterator()
 
 	for {
@@ -285,7 +286,7 @@ func (bc *Blockchain) FindTransaction(ID []byte) (Transaction, error) {
 
 		for _, tx := range block.Transactions {
 			if bytes.Compare(tx.ID, ID) == 0 {
-				return *tx, nil
+				return tx, nil
 			}
 		}
 
@@ -294,7 +295,21 @@ func (bc *Blockchain) FindTransaction(ID []byte) (Transaction, error) {
 		}
 	}
 
-	return Transaction{}, errors.New("Transaction is not found")
+	return nil, errors.New("Transaction is not found")
+}
+
+// SignTransaction signs inputs of a Transaction
+func (bc *Blockchain) SignTransaction(tx *Transaction, privKey ecdsa.PrivateKey) {
+	prevTXs := make(map[string]Transaction)
+
+	for _, vin := range tx.Vin {
+		prevTX, err := bc.FindTransaction(vin.Txid)
+		if err != nil {
+			log.Panic(err)
+		}
+		prevTXs[hex.EncodeToString(prevTX.ID)] = *prevTX
+	}
+	tx.Sign(privKey, prevTXs)
 }
 
 // VerifyTransaction verifies transaction input signatures
@@ -307,7 +322,7 @@ func (bc *Blockchain) VerifyTransaction(tx *Transaction) bool {
 		if err != nil {
 			log.Panic(err)
 		}
-		prevTXs[hex.EncodeToString(prevTX.ID)] = prevTX
+		prevTXs[hex.EncodeToString(prevTX.ID)] = *prevTX
 	}
 
 	return tx.Verify(prevTXs)
