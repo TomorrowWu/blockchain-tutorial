@@ -1,0 +1,17 @@
+{
+  "name": "contract_workflow",
+  "version": "1.0.0",
+  "description": "合约项目工作流",
+  "main": "index.js",
+  "directories": {
+	"test": "tests"
+  },
+  "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "吴名",
+  "license": "ISC",
+  "devDependencies": {
+	"solc": "^0.4.25"
+  }
+}
