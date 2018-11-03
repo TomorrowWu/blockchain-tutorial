@@ -35,7 +35,7 @@ describe('contract', () => {
         assert.equal(brand, initialBrand);
     });
 
-    it('can change the brand',async ()=>{
+    it('can change the brand', async () => {
         const newBrand = 'Benz';
         await contract.methods.setBrand(newBrand).send({ from: accounts[0] });
         const brand = await contract.methods.brand().call();
