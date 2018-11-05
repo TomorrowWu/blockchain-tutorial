@@ -1,8 +1,8 @@
 // var Web3 = require('web3'); //不需要导包
-var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545'))
 
 var abi = JSON.parse('[{"constant":true,"inputs":[{"name":"candidateName","type":"bytes32"}],"name":"totalVotesFor","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"votesReceived","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"candidateName","type":"bytes32"}],"name":"vote","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"candidateList","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"candidateListNames","type":"bytes32[]"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]');
-var contractAddr = "0x0423a7f053a52f0b57329bca2079eb8aa906c1dd";
+var contractAddr = '0x345ca3e014aaf5dca488057592ee47305d9b3e10'
 var VotingContract = web3.eth.contract(abi);
 var contractInstance = VotingContract.at(contractAddr);
 
