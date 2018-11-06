@@ -18,7 +18,7 @@ window.voteForCandidate = function (candidate) {
     $('#msg').html('Vote has been submitted. The vote count will increment as soon as the vote is recorded on the blockchain. Please wait.')
     $('#candidate').val('')
     Voting.deployed().then(function (contractInstance) {
-      //TODO 吴名 2018/11/5 18:29 待解决CORS跨域问题
+      //webpack proxy 解决跨域问题
       //私链服务器设置
       contractInstance.vote(candidateName, { gas: 140000, from: web3.eth.accounts[0] })
         .then(function () {
@@ -42,7 +42,7 @@ $(document).ready(function () {
     Web3.providers
       .HttpProvider(host))
   } else {
-    console.warn('No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask')  // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+    // console.warn('No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask')  // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
     window.web3 = new Web3(new
     Web3.providers
       .HttpProvider(host))
