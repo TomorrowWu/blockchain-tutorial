@@ -9,6 +9,8 @@ import voting_artifacts from '../../build/contracts/Voting.json'
 var Voting = contract(voting_artifacts)
 let candidates = { 'Alice': 'candidate-1', 'Bob': 'candidate-2', 'Cary': 'candidate-3' }
 
+let host = 'http://39.105.42.197:8545'
+
 window.voteForCandidate = function (candidate) {
   let candidateName = $('#candidate').val()
   try {
@@ -37,12 +39,12 @@ $(document).ready(function () {
     // window.web3 = new Web3(web3.currentProvider)
     window.web3 = new Web3(new
     Web3.providers
-      .HttpProvider('http://localhost:9545'))
+      .HttpProvider(host))
   } else {
     console.warn('No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask')  // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
     window.web3 = new Web3(new
     Web3.providers
-      .HttpProvider('http://localhost:9545'))
+      .HttpProvider(host))
   }
   
   Voting.setProvider(web3.currentProvider)
