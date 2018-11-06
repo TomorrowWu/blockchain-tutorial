@@ -9,7 +9,8 @@ import voting_artifacts from '../../build/contracts/Voting.json'
 var Voting = contract(voting_artifacts)
 let candidates = { 'Alice': 'candidate-1', 'Bob': 'candidate-2', 'Cary': 'candidate-3' }
 
-let host = 'http://39.105.42.197:8545'
+let host = 'http://localhost:8080/api'
+// let host = 'http://39.105.42.197:8545'
 
 window.voteForCandidate = function (candidate) {
   let candidateName = $('#candidate').val()

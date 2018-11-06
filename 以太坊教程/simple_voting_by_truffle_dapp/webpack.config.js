@@ -15,7 +15,16 @@ module.exports = {
 		])
 	],
 	devtool: 'source-map',
-	module: {
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://39.105.42.197:8545',
+        changeOrigin: true, // 支持跨域
+        secure: false
+      }
+    }
+  },
+  module: {
 		rules: [
 			{test: /\.s?css$/, use: ['style-loader', 'css-loader', 'sass-loader']},
 			{
