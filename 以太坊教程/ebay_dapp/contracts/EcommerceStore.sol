@@ -25,10 +25,10 @@ contract EcommerceStore {
 		address highestBidder;
 		uint highestBid;
 		uint secondHighestBid;
-		uint totalBids;
+		uint totalBids; //总出价次数
 		ProductStatus status;
 		ProductCondition condition;
-		//出价者地址 => {出价字符串 => 出价}
+		//出价者地址 => {出价字符串 => 出价对象}
 		mapping(address => mapping(bytes32 => Bid)) bids;
 	}
 	
@@ -61,22 +61,26 @@ contract EcommerceStore {
 		product.auctionEndTime, product.startPrice, product.status, product.condition);
 	}
 	
+	//出价
 	function bid(uint _productId, bytes32 _bid) payable public returns (bool) {
+		//_bid 为出价加密字符串，除非用户揭示价格，否则无人知道出价
 		Product storage product = stores[productIdInStore[_productId]][_productId];
 		require(now >= product.auctionStartTime);
 		require(now <= product.auctionEndTime);
 		require(msg.value > product.startPrice);
 		//本人对该商品未出过此价
 		require(product.bids[msg.sender][_bid].bidder == 0);
-		// msg.value 转账金额
+		// 记录出价数据
 		product.bids[msg.sender][_bid] = Bid(msg.sender, _productId, msg.value, false);
 		product.totalBids += 1;
 		return true;
 	}
 	
+	//揭示出价
 	function revealBid(uint _productId, string _amount, string _secret) public {
 		Product storage product = stores[productIdInStore[_productId]][_productId];
 		require(now > product.auctionEndTime);
+		//出价的加密字符串
 		bytes32 sealedBid = sha3(_amount, _secret);
 		
 		Bid memory bidInfo = product.bids[msg.sender][sealedBid];
@@ -88,6 +92,7 @@ contract EcommerceStore {
 		uint amount = stringToUint(_amount);
 		
 		if (bidInfo.value < amount) {
+			//无效出价
 			// They didn't send enough amount, they lost
 			refund = bidInfo.value;
 		} else {
@@ -99,12 +104,15 @@ contract EcommerceStore {
 				refund = bidInfo.value - amount;
 			} else {
 				if (amount > product.highestBid) {
+					//为最高出价
 					product.secondHighestBid = product.highestBid;
 					product.highestBidder.transfer(product.highestBid);
+					//给第二高出价者退款
 					product.highestBidder = msg.sender;
 					product.highestBid = amount;
 					refund = bidInfo.value - amount;
 				} else if (amount > product.secondHighestBid) {
+					//为第二高出价
 					product.secondHighestBid = amount;
 					refund = bidInfo.value;
 				} else {
