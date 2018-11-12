@@ -1,52 +1,52 @@
-body {
-	margin-left: 25%;
-	margin-right: 25%;
-	margin-top: 10%;
-	font-family: "Open Sans", sans-serif;
-}
+/*body {*/
+/*margin-left: 25%;*/
+/*margin-right: 25%;*/
+/*margin-top: 10%;*/
+/*font-family: "Open Sans", sans-serif;*/
+/*}*/
 
-label {
-	display: inline-block;
-	width: 100px;
-}
+/*label {*/
+/*display: inline-block;*/
+/*width: 100px;*/
+/*}*/
 
-input {
-	width: 500px;
-	padding: 5px;
-	font-size: 16px;
-}
+/*input {*/
+/*width: 500px;*/
+/*padding: 5px;*/
+/*font-size: 16px;*/
+/*}*/
 
-button {
-	font-size: 16px;
-	padding: 5px;
-}
+/*button {*/
+/*font-size: 16px;*/
+/*padding: 5px;*/
+/*}*/
 
-h1, h2 {
-	display: inline-block;
-	vertical-align: middle;
-	margin-top: 0px;
-	margin-bottom: 10px;
-}
+/*h1, h2 {*/
+/*display: inline-block;*/
+/*vertical-align: middle;*/
+/*margin-top: 0px;*/
+/*margin-bottom: 10px;*/
+/*}*/
 
-h2 {
-	color: #aaaaaa;
-	font-size: 32px;
-}
+/*h2 {*/
+/*color: #aaaaaa;*/
+/*font-size: 32px;*/
+/*}*/
 
-h3 {
-	font-weight: normal;
-	color: #aaaaaa;
-	font-size: 24px;
-}
+/*h3 {*/
+/*font-weight: normal;*/
+/*color: #aaaaaa;*/
+/*font-size: 24px;*/
+/*}*/
 
-.black {
-	color: black;
-}
+/*.black {*/
+/*color: black;*/
+/*}*/
 
-#balance {
-	color: black;
-}
+/*#balance {*/
+/*color: black;*/
+/*}*/
 
-.hint {
-	color: #666666;
-}
+/*.hint {*/
+/*color: #666666;*/
+/*}*/
