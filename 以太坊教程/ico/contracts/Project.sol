@@ -39,7 +39,9 @@ contract Project {
 		uint amount; //支出金额
 		address receiver; //收款方
 		bool completed; //状态，标明该笔支出是否已经完成
-		address[] voters; //投票记录
+		//		address[] voters; //投票记录
+		mapping(address => bool) voters; //投票记录(数组中查需要遍历，map为O(1))
+		uint voterCount;
 	}
 	
 	address public owner; //所有者，即发起项目的人
@@ -47,7 +49,10 @@ contract Project {
 	uint public minInvest; //最小投资金额
 	uint public maxInvest; //最大投资金额
 	uint public goal; //融资上限，即设定项目的融资目标
-	address[] public investors; //投资人列表
+	//	address[] public investors; //投资人列表
+	mapping(address => uint) public investors;
+	uint public investorCount;
+	
 	Payment[] public payments; //资金支出列表
 	
 	//函数修饰器，只有符合条件的用户才能调用函数
@@ -75,7 +80,9 @@ contract Project {
 		uint newBalance = 0;
 		newBalance = address(this).balance.add(msg.value);
 		require(newBalance <= goal, "Total amount should not exceed goal.");
-		investors.push(msg.sender);
+		//		investors.push(msg.sender);
+		investors[msg.sender] = msg.value;
+		investorCount += 1;
 	}
 	
 	//发起资金支出请求
@@ -85,7 +92,8 @@ contract Project {
 			amount : _amount,
 			receiver : _receiver,
 			completed : false,
-			voters : new address[](0)
+			//			voters : new address[](0)
+			voterCount : 0
 			});
 		payments.push(newPayment);
 	}
@@ -95,26 +103,30 @@ contract Project {
 		Payment storage payment = payments[index];
 		
 		// must be investor to vote
-		bool isInvestor = false;
-		for (uint i = 0; i < investors.length; i++) {
-			isInvestor = (investors[i] == msg.sender);
-			if (isInvestor) {
-				break;
-			}
-		}
-		require(isInvestor);
+		//		bool isInvestor = false;
+		//		for (uint i = 0; i < investors.length; i++) {
+		//			isInvestor = (investors[i] == msg.sender);
+		//			if (isInvestor) {
+		//				break;
+		//			}
+		//		}
+		//		require(isInvestor);
+		require(investors[msg.sender] > 0);
 		
 		// can not vote twice
-		bool hasVoted = false;
-		for (uint j = 0; j < payment.voters.length; j++) {
-			hasVoted = (payment.voters[j] == msg.sender);
-			if (hasVoted) {
-				break;
-			}
-		}
-		require(!hasVoted);
+		//		bool hasVoted = false;
+		//		for (uint j = 0; j < payment.voters.length; j++) {
+		//			hasVoted = (payment.voters[j] == msg.sender);
+		//			if (hasVoted) {
+		//				break;
+		//			}
+		//		}
+		//		require(!hasVoted);
+		require(!payment.voters[msg.sender]);
 		
-		payment.voters.push(msg.sender);
+		//		payment.voters.push(msg.sender);
+		payment.voters[msg.sender] = true;
+		payment.voterCount += 1;
 	}
 	
 	//完成资金支出
@@ -123,7 +135,8 @@ contract Project {
 		require(!payment.completed);
 		//检查账户余额
 		require(address(this).balance >= payment.amount);
-		require(payment.voters.length > (investors.length / 2));
+		//		require(payment.voters.length > (investors.length / 2));
+		require(payment.voterCount > investorCount / 2);
 		payment.receiver.transfer(payment.amount);
 		payment.completed = true;
 	}
