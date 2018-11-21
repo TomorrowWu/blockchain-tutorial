@@ -31,6 +31,20 @@ library SafeMath {
 	}
 }
 
+contract ProjectList {
+	using SafeMath for uint;
+	address[] public projects;
+	
+	function createProject(string memory _description, uint _minInvest, uint _maxInvest, uint _goal) public {
+		address newProject = new Project(msg.sender, _description, _minInvest, _maxInvest, _goal);
+		projects.push(newProject);
+	}
+	
+	function getProjects() public view returns (address[]) {
+		return projects;
+	}
+}
+
 contract Project {
 	using SafeMath for uint;
 	struct Payment {
@@ -76,13 +90,12 @@ contract Project {
 		//避免单个投资人投入金额过大
 		require(msg.value <= maxInvest);
 		//累计金额达到这个目标，就不再接受新的投资
-		//require(address(this).balance + msg.value <= goal);
-		uint newBalance = 0;
-		newBalance = address(this).balance.add(msg.value);
-		require(newBalance <= goal, "Total amount should not exceed goal.");
-		//		investors.push(msg.sender);
-		investors[msg.sender] = msg.value;
-		investorCount += 1;
+		require(address(this).balance <= goal, "Total amount should not exceed goal.");
+		if (investors[msg.sender] == 0) {
+			//投资人数只记一次
+			investorCount += 1;
+		}
+		investors[msg.sender] += msg.value;
 	}
 	
 	//发起资金支出请求
