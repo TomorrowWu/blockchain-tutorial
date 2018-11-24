@@ -1,7 +1,9 @@
 const path = require('path');
 const fs = require('fs-extra');
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+const ip = require('../ip.json');
+
+const web3 = new Web3(new Web3.providers.HttpProvider(ip));
 
 // 1. 拿到 bytecode
 const contractPath = path.resolve(__dirname, '../compiled/ProjectList.json');
