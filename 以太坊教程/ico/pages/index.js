@@ -15,10 +15,10 @@ class Index extends React.Component {
 	// 	this.state = {
 	// 		accounts: []
 	// 	};
-		
-		//Metamask 会在浏览器的 Javascript 中注入全局的 Provider，提供给Web3对象使用，
-		// 所以在安装了 Metamask 的情况下，我们在浏览器环境下可以直接这样初始化 Web3 实例
-		// this.web3 = new Web3(window.web3.currentProvider);
+	
+	//Metamask 会在浏览器的 Javascript 中注入全局的 Provider，提供给Web3对象使用，
+	// 所以在安装了 Metamask 的情况下，我们在浏览器环境下可以直接这样初始化 Web3 实例
+	// this.web3 = new Web3(window.web3.currentProvider);
 	// }
 	
 	// async componentDidMount() {
