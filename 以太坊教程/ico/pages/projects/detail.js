@@ -1,5 +1,18 @@
 import React from 'react';
-import {Button, CircularProgress, Grid, LinearProgress, Paper, TextField, Typography} from '@material-ui/core';
+import {
+	Button,
+	CircularProgress,
+	Grid,
+	LinearProgress,
+	Paper,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableRow,
+	TextField,
+	Typography
+} from '@material-ui/core';
 import {Link} from '../../routes';
 import web3 from '../../libs/web3';
 import Project from '../../libs/project';
@@ -15,6 +28,12 @@ class ProjectDetail extends React.Component {
 		const summary = await contract.methods.getSummary().call();
 		const [description, minInvest, maxInvest, goal, balance, investorCount, paymentCount, owner] = Object.values(summary);
 		
+		const tasks = [];
+		for (let i = 0; i < paymentCount; i++) {
+			tasks.push(contract.methods.payments(i).call());
+		}
+		const payments = await Promise.all(tasks);
+		
 		const project = {
 			address: query.address,
 			description,
@@ -24,8 +43,10 @@ class ProjectDetail extends React.Component {
 			balance,
 			investorCount,
 			paymentCount,
-			owner
+			owner,
+			payments
 		};
+		
 		return {project};
 	}
 	
@@ -143,6 +164,32 @@ class ProjectDetail extends React.Component {
 	renderPayments(project) {
 		return (
 			<Paper style={{padding: '15px'}}>
+				<Table style={{marginBottom: '30px'}}>
+					<TableHead>
+						<TableRow>
+							<TableCell>支出理由</TableCell>
+							<TableCell numeric>支出金额</TableCell>
+							<TableCell>收款人</TableCell>
+							<TableCell>是否完成</TableCell>
+							<TableCell>投票状态</TableCell>
+							<TableCell>操作</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{project.payments.map(payment => {
+							return (
+								<TableRow key={payment.id}>
+									<TableCell>{payment.description}</TableCell>
+									<TableCell numeric>{web3.utils.fromWei(payment.amount, 'ether')} ETH</TableCell>
+									<TableCell>{payment.receiver}</TableCell>
+									<TableCell>{payment.completed ? '是' : '否'}</TableCell>
+									<TableCell>{payment.voterCount}/{project.investorCount}</TableCell>
+									<TableCell/>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
 				<Link route={`/projects/${project.address}/payments/create`}>
 					<Button variant="raised" color="primary">
 						创建资金支出请求
