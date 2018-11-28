@@ -56,7 +56,8 @@ class ProjectDetail extends React.Component {
 			amount: 0,
 			errmsg: '',
 			loading: false,
-			isApproving: false
+			isApproving: false,
+			isPaying: false
 		};
 		this.onSubmit = this.contributeProject.bind(this);
 	}
@@ -146,6 +147,38 @@ class ProjectDetail extends React.Component {
 		}
 	}
 	
+	async doPayment(i) {
+		try {
+			this.setState({isPaying: i});
+			
+			// get accounts
+			const accounts = await web3.eth.getAccounts();
+			const sender = accounts[0];
+			
+			// check account
+			if (sender !== this.props.project.owner) {
+				return window.alert('只有管理员才能划转资金');
+			}
+			
+			//  do payment
+			const contract = Project(this.props.project.address);
+			const result = await contract.methods
+				.doPayment(i)
+				.send({from: sender, gas: '5000000'});
+			
+			window.alert('资金划转成功');
+			
+			setTimeout(() => {
+				location.reload();
+			}, 1000);
+		} catch (err) {
+			console.error(err);
+			window.alert(err.message || err.toString());
+		} finally {
+			this.setState({isPaying: false});
+		}
+	}
+	
 	render() {
 		const {project} = this.props;
 		
@@ -221,6 +254,7 @@ class ProjectDetail extends React.Component {
 	
 	renderPaymentRow(payment, index, project) {
 		const canApprove = !payment.completed;
+		const canDoPayment = !payment.completed && payment.voterCount / project.investorCount > 0.5;
 		return (
 			<TableRow key={payment.id}>
 				<TableCell>{payment.description}</TableCell>
@@ -234,6 +268,11 @@ class ProjectDetail extends React.Component {
 							{this.isApproving(index) ? <CircularProgress color="secondary" size={24}/> : '投赞成票'}
 						</Button>
 					)}
+					{canDoPayment && (
+						<Button size="small" color="primary" onClick={() => this.doPayment(index)}>
+							{this.isPaying(index) ? <CircularProgress color="secondary" size={24}/> : '资金划转'}
+						</Button>
+					)}
 				</TableCell>
 			</TableRow>
 		);
@@ -241,6 +280,10 @@ class ProjectDetail extends React.Component {
 	
 	isApproving(i) {
 		return typeof this.state.isApproving === 'number' && this.state.isApproving === i;
+	}
+	
+	isPaying(i) {
+		return typeof this.state.isPaying === 'number' && this.state.isPaying === i;
 	}
 }
 
