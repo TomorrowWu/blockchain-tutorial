@@ -29,6 +29,7 @@
 	"jss": "^9.8.7",
 	"react-jss": "^8.6.1",
 	"styled-jsx": "^3.1.2",
-	"prop-types": "^15.6.2"
+	"prop-types": "^15.6.2",
+	"config": "^1.30.0"
   }
 }

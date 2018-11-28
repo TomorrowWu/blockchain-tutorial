@@ -1,11 +1,11 @@
 const Web3 = require('web3');
 const ProjectList = require('../compiled/ProjectList.json');
 const address = require('../address.json');
-const ip = require('../ip.json');
 
 //准备一些测试数据
 
-const web3 = new Web3(new Web3.providers.HttpProvider(ip));
+const config = require('config');
+const web3 = new Web3(new Web3.providers.HttpProvider(config.get('providerUrl')));
 const contract = new web3.eth.Contract(JSON.parse(ProjectList.interface), address);
 
 (async () => {
