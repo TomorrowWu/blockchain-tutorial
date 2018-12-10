@@ -2,6 +2,12 @@ const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
+  devServer: {
+    port: '8081',
+    // disableHostCheck: true,
+    // or
+    public: '0.0.0.0:8081'
+  },
   entry: './app/scripts/index.js',
   mode: 'production',
   output: {
