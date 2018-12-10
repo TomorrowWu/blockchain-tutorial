@@ -66,10 +66,10 @@ function populateCandidates () {
     contractInstance.allCandidates.call().then(function (candidateArray) {
       for (let i = 0; i < candidateArray.length; i++) {
         candidates[web3.toUtf8(candidateArray[i])] = 'candidate-' + i
-        setupCandidateRows()
-        populateCandidateVotes()
-        populateTokenData()
       }
+      setupCandidateRows()
+      populateCandidateVotes()
+      populateTokenData()
     })
   })
 }
@@ -87,6 +87,7 @@ function populateCandidateVotes () {
 }
 
 function setupCandidateRows () {
+  console.log(candidates)
   Object.keys(candidates).forEach(function (candidate) {
     $('#candidate-rows').append('<tr><td>' + candidate + '</td><td id=\'' + candidates[candidate] + '\'></td></tr>')
   })
@@ -111,17 +112,17 @@ function populateTokenData () {
   })
 }
 
-const host = 'http://39.105.42.197:8545'
+const host = 'http://39.105.42.197:18545'
 // const host = 'http://localhost:8545';
 
 $(document).ready(function () {
   if (typeof web3 !== 'undefined') {
-    console.warn('Using web3 detected from external source like Metamask')
+    // console.warn('Using web3 detected from external source like Metamask')
     // Use Mist/MetaMask's provider
     // window.web3 = new Web3(web3.currentProvider);
     window.web3 = new Web3(new Web3.providers.HttpProvider(host))
   } else {
-    console.warn('No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask')
+    // console.warn('No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask')
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
     window.web3 = new Web3(new Web3.providers.HttpProvider(host))
   }
